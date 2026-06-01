@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+
+    
+  </head>
+
+
+
+  <body>
+    
+
+
+
+
+
+
+  </body>
+
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Caveat:wght@500;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.ab-root {
+  background: #1a1025;
+  padding: clamp(16px, 4vw, 32px) clamp(10px, 3vw, 24px) clamp(20px, 4vw, 28px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Special Elite', cursive;
+  -webkit-font-smoothing: antialiased;
+  width: 100%;
+}
+
+.ab-scene {
+  width: 100%;
+  max-width: 520px;
+}
+
+.ab-book {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 4px 10px 10px 4px;
+}
+
+.ab-spine {
+  width: clamp(20px, 5vw, 30px);
+  flex-shrink: 0;
+  background: #2d1a50;
+  border-right: 2px solid #4a2880;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+.ab-spine-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: 'Caveat', cursive;
+  font-size: clamp(10px, 2.5vw, 13px);
+  color: #c9a8e8;
+  letter-spacing: 2px;
+  opacity: .85;
+  white-space: nowrap;
+}
+
+.ab-stage {
+  flex: 1;
+  position: relative;
+  aspect-ratio: 3 / 4;
+  min-height: 0;
+  perspective: 1400px;
+}
+
+.ab-spread {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.ab-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 0 8px 8px 0;
+  overflow: hidden;
+}
+.ab-face.front { transform: rotateY(0deg); }
+.ab-face.back  { transform: rotateY(180deg); }
+
+.ab-cover {
+  background: #3d1a6e;
+  border: 2px solid #4a2880;
+  border-left: none;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2.5vw, 14px);
+  padding: clamp(18px, 5vw, 32px);
+  position: relative;
+}
+.ab-cover-border {
+  position: absolute;
+  inset: 8px;
+  border: 1.5px solid rgba(201,150,42,.38);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.ab-cover-border::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: .5px solid rgba(201,150,42,.18);
+  border-radius: 2px;
+}
+.ab-cover-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 5.5vw, 30px);
+  font-weight: 700;
+  color: #f0e6ff;
+  text-align: center;
+  line-height: 1.2;
+  position: relative;
+  z-index: 1;
+}
+.ab-cover-rule { width: 56px; height: 1.5px; background: rgba(201,150,42,.55); flex-shrink: 0; }
+.ab-cover-sub {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(11px, 3vw, 15px);
+  color: #c9a8e8;
+  text-align: center;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 1;
+}
+.ab-cover-date {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(12px, 3.5vw, 17px);
+  color: #c9962a;
+  cursor: pointer;
+  border-bottom: 1px dashed rgba(201,150,42,.45);
+  padding-bottom: 1px;
+  position: relative;
+  z-index: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+.ab-cover-badge {
+  position: absolute;
+  bottom: clamp(12px, 3vw, 20px);
+  right: clamp(12px, 3vw, 20px);
+  width: clamp(34px, 9vw, 48px);
+  height: clamp(34px, 9vw, 48px);
+  border-radius: 50%;
+  background: #4a7c3f;
+  border: 2px solid #8fba6a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1px;
+  z-index: 1;
+}
+.ab-cover-badge .b1 { font-size: clamp(11px, 3vw, 16px); line-height: 1; }
+.ab-cover-badge .b2 { font-size: clamp(6px, 1.6vw, 8px); color: #dff0d2; font-family: 'Caveat', cursive; line-height: 1; }
+
+.ab-page {
+  background: #f5eed8;
+  border: 1.5px solid #c4a96e;
+  border-left: none;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.ab-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(transparent, transparent 28px, rgba(139,100,50,.1) 28px, rgba(139,100,50,.1) 29px);
+}
+.ab-page-inner {
+  position: absolute;
+  inset: 0;
+  padding: clamp(12px, 3.5vw, 20px) clamp(12px, 3.5vw, 20px) clamp(36px, 8vw, 48px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.5vw, 10px);
+}
+
+.ab-stamp {
+  position: absolute;
+  top: clamp(8px, 2vw, 12px);
+  right: clamp(8px, 2vw, 14px);
+  border: 1.5px solid rgba(74,124,63,.5);
+  padding: 2px 5px;
+  font-size: clamp(7px, 1.8vw, 9px);
+  color: rgba(45,74,30,.65);
+  transform: rotate(3deg);
+  letter-spacing: 1px;
+  line-height: 1.3;
+}
+.ab-pgnum {
+  position: absolute;
+  bottom: clamp(10px, 2.5vw, 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Caveat', cursive;
+  font-size: clamp(11px, 2.5vw, 13px);
+  color: #8b6a3a;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+.ab-corner {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: clamp(18px, 4vw, 24px);
+  height: clamp(18px, 4vw, 24px);
+  background: linear-gradient(135deg, transparent 50%, #ede3c4 50%);
+  border-left: 1px solid rgba(180,140,60,.3);
+  border-top: 1px solid rgba(180,140,60,.3);
+  border-radius: 0 0 8px 0;
+}
+.ab-washi {
+  position: absolute;
+  left: 0; right: 0;
+  height: 12px;
+  background: repeating-linear-gradient(90deg, rgba(74,124,63,.28) 0px, rgba(74,124,63,.28) 6px, rgba(143,186,106,.2) 6px, rgba(143,186,106,.2) 12px);
+}
+.ab-balloons {
+  position: absolute;
+  top: clamp(6px, 1.5vw, 10px);
+  right: clamp(28px, 7vw, 44px);
+  display: flex;
+  gap: 2px;
+  opacity: .5;
+  font-size: clamp(9px, 2.2vw, 13px);
+}
+
+.ab-chdr {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(8px, 2vw, 10px);
+  font-style: italic;
+  color: #6b3fa0;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-align: center;
+  border-bottom: 1px solid rgba(107,63,160,.2);
+  padding-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.ab-frame {
+  background: #fff;
+  padding: clamp(4px, 1vw, 6px) clamp(4px, 1vw, 6px) clamp(16px, 4vw, 22px);
+  border: 1px solid #ddd;
+  width: 80%;
+  max-width: 260px;
+  align-self: center;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.ab-frame::before {
+  content: '';
+  position: absolute;
+  top: -4px; left: 50%;
+  transform: translateX(-50%);
+  width: 34px; height: 11px;
+  background: rgba(107,63,160,.22);
+  border-radius: 2px;
+}
+.ab-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #ede3c4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.ab-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ab-photo-icon { font-size: clamp(18px, 4.5vw, 24px); opacity: .35; position: relative; z-index: 1; }
+.ab-photo-hint { font-size: clamp(9px, 2vw, 11px); color: #8b6a3a; font-style: italic; position: relative; z-index: 1; }
+.ab-caption {
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: clamp(11px, 2.8vw, 13px);
+  color: #5a3e1b;
+  margin-top: 2px;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.ab-msg {
+  background: rgba(201,168,232,.15);
+  border-left: 3px solid #6b3fa0;
+  border-radius: 0 4px 4px 0;
+  padding: clamp(7px, 2vw, 10px) clamp(9px, 2.5vw, 13px);
+  flex-shrink: 0;
+}
+.ab-msg-txt {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #1e1208;
+  line-height: 1.65;
+  cursor: pointer;
+}
+.ab-msg-sign {
+  text-align: right;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(10px, 2.2vw, 11px);
+  color: #6b3fa0;
+  margin-top: 4px;
+}
+
+.ab-pol-row {
+  display: flex;
+  gap: clamp(8px, 2.5vw, 14px);
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ab-pol {
+  background: #fff;
+  padding: clamp(4px, 1vw, 5px) clamp(4px, 1vw, 5px) clamp(16px, 4vw, 20px);
+  border: 1px solid #ddd;
+  flex: 1;
+  min-width: 0;
+  max-width: 44%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ab-pol:nth-child(1) { transform: rotate(-2.5deg); }
+.ab-pol:nth-child(2) { transform: rotate(2deg); margin-top: 8px; }
+.ab-pol-img {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #ede3c4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(14px, 3.5vw, 18px);
+  opacity: .4;
+  overflow: hidden;
+  position: relative;
+}
+.ab-pol-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ab-pol-lbl {
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: clamp(10px, 2.5vw, 12px);
+  color: #5a3e1b;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.ab-reasons { list-style: none; flex-shrink: 0; }
+.ab-reasons li {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  font-family: 'Caveat', cursive;
+  font-size: clamp(11px, 2.8vw, 14px);
+  color: #1e1208;
+  line-height: 1.5;
+  margin-bottom: clamp(4px, 1vw, 7px);
+  cursor: pointer;
+}
+.ab-reasons li::before { content: '★'; color: #4a7c3f; font-size: 9px; margin-top: 4px; flex-shrink: 0; }
+
+.ab-tag {
+  display: inline-block;
+  background: #4a7c3f;
+  color: #dff0d2;
+  font-size: clamp(7px, 1.8vw, 9px);
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.ab-tl { flex-shrink: 0; }
+.ab-tl-item { display: flex; gap: 8px; margin-bottom: clamp(8px, 2vw, 11px); }
+.ab-tl-dot { width: 8px; height: 8px; min-width: 8px; border-radius: 50%; background: #6b3fa0; margin-top: 4px; }
+.ab-tl-line { width: 1.5px; flex: 1; min-height: 20px; margin-top: 2px; background: rgba(107,63,160,.22); }
+.ab-tl-date { font-size: clamp(9px, 2.2vw, 11px); color: #4a7c3f; margin-bottom: 1px; cursor: pointer; }
+.ab-tl-txt { font-family: 'Caveat', cursive; font-size: clamp(11px, 2.8vw, 13px); color: #1e1208; line-height: 1.5; cursor: pointer; }
+
+.ab-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 3vw, 16px);
+  margin-top: clamp(10px, 2.5vw, 14px);
+  width: 100%;
+}
+.ab-btn {
+  background: rgba(61,26,110,.75);
+  border: 1.5px solid #6b3fa0;
+  color: #c9a8e8;
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(11px, 2.8vw, 13px);
+  padding: clamp(7px, 2vw, 9px) clamp(14px, 4vw, 22px);
+  border-radius: 20px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background .18s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-width: clamp(64px, 16vw, 90px);
+}
+.ab-btn:hover:not(:disabled) { background: rgba(107,63,160,.65); }
+.ab-btn:active:not(:disabled) { transform: scale(.97); }
+.ab-btn:disabled { opacity: .22; cursor: default; }
+.ab-ind {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(13px, 3.5vw, 16px);
+  color: #c9a8e8;
+  min-width: clamp(72px, 20vw, 110px);
+  text-align: center;
+  flex: 1;
+}
+.ab-dots { display: flex; gap: 6px; justify-content: center; margin-top: 8px; }
+.ab-dot {
+  width: clamp(5px, 1.4vw, 7px);
+  height: clamp(5px, 1.4vw, 7px);
+  border-radius: 50%;
+  background: rgba(201,168,232,.25);
+  cursor: pointer;
+  transition: background .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.ab-dot.on { background: #c9a8e8; }
+.ab-hint {
+  font-size: clamp(9px, 2.2vw, 10px);
+  color: rgba(201,168,232,.32);
+  text-align: center;
+  margin-top: 6px;
+  letter-spacing: .5px;
+}
+
+input[type=file] { display: none; }
+</style>
+
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">UP adventure scrapbook — tap next or swipe to flip pages</h2>
+
+<div class="ab-root">
+  <div class="ab-scene">
+
+    <div class="ab-book" id="ab-book">
+      <div class="ab-spine"><span class="ab-spine-text">Our Adventure Book</span></div>
+
+      <div class="ab-stage" id="ab-stage">
+
+        <div class="ab-spread" id="sp0" style="z-index:10;">
+          <div class="ab-face front ab-cover">
+            <div class="ab-cover-border"></div>
+            <svg width="clamp(60px,18vw,100px)" style="width:clamp(60px,18vw,100px);height:auto;flex-shrink:0;position:relative;z-index:1;" viewBox="0 0 120 110" fill="none">
+              <rect x="25" y="58" width="70" height="48" rx="2" fill="#c9962a" stroke="#f0d080" stroke-width="1.5"/>
+              <polygon points="20,60 60,20 100,60" fill="#8fba6a" stroke="#dff0d2" stroke-width="1.5"/>
+              <rect x="50" y="78" width="20" height="28" rx="1" fill="#2d4a1e"/>
+              <rect x="30" y="65" width="16" height="14" rx="1" fill="#3d1a6e" stroke="#c9a8e8" stroke-width="1"/>
+              <rect x="74" y="65" width="16" height="14" rx="1" fill="#3d1a6e" stroke="#c9a8e8" stroke-width="1"/>
+              <line x1="38" y1="58" x2="38" y2="50" stroke="#c9a8e8" stroke-width="1" stroke-dasharray="2,2"/>
+              <line x1="48" y1="58" x2="48" y2="42" stroke="#c9a8e8" stroke-width="1" stroke-dasharray="2,2"/>
+              <line x1="60" y1="56" x2="60" y2="34" stroke="#c9a8e8" stroke-width="1" stroke-dasharray="2,2"/>
+              <line x1="72" y1="58" x2="72" y2="42" stroke="#c9a8e8" stroke-width="1" stroke-dasharray="2,2"/>
+              <line x1="82" y1="58" x2="82" y2="50" stroke="#c9a8e8" stroke-width="1" stroke-dasharray="2,2"/>
+              <circle cx="38" cy="46" r="5" fill="#c9a8e8"/>
+              <circle cx="48" cy="38" r="5" fill="#6b3fa0"/>
+              <circle cx="60" cy="30" r="6" fill="#c9a8e8"/>
+              <circle cx="72" cy="38" r="5" fill="#4a7c3f"/>
+              <circle cx="82" cy="46" r="5" fill="#8fba6a"/>
+            </svg>
+            <div class="ab-cover-title">Our Adventure<br>Book</div>
+            <div class="ab-cover-rule"></div>
+            <div class="ab-cover-sub">adventure is out there ✦</div>
+            <div class="ab-cover-date" id="cd" onclick="editCD()">tap to set your date</div>
+            <div class="ab-cover-badge"><span class="b1">★</span><span class="b2">EXPLORER</span></div>
+          </div>
+          <div class="ab-face back ab-page">
+            <div class="ab-washi" style="top:38px;"></div>
+            <div class="ab-stamp">ADVENTURE BEGINS</div>
+            <div class="ab-balloons"><span>🟣</span><span>🟢</span><span>🟣</span></div>
+            <div class="ab-page-inner">
+              <div class="ab-chdr">— Chapter One —</div>
+              <div class="ab-frame" onclick="pu(0)">
+                <div class="ab-photo" id="ph0"><span class="ab-photo-icon">📷</span><span class="ab-photo-hint">tap to add photo</span></div>
+                <div class="ab-caption" id="cp0" onclick="sp(event);et('cp0','caption')">our first chapter ✎</div>
+              </div>
+              <div class="ab-msg">
+                <div class="ab-msg-txt" id="m1" onclick="et('m1','message')">You are my greatest adventure. From the very first moment I knew — this is the story I want to keep writing forever. ✎</div>
+                <div class="ab-msg-sign">— with all my love</div>
+              </div>
+            </div>
+            <div class="ab-pgnum">— 1 —</div>
+            <div class="ab-corner"></div>
+          </div>
+        </div>
+
+        <div class="ab-spread" id="sp1" style="z-index:9;">
+          <div class="ab-face front ab-page">
+            <div class="ab-stamp">SNAPSHOTS</div>
+            <div class="ab-balloons"><span>🟢</span><span>🟣</span></div>
+            <div class="ab-page-inner">
+              <div class="ab-chdr">— Our Moments —</div>
+              <div class="ab-pol-row">
+                <div class="ab-pol" onclick="pu(1)">
+                  <div class="ab-pol-img" id="pl1"><span>📷</span><img id="pi1" style="display:none"/></div>
+                  <div class="ab-pol-lbl" id="ll1" onclick="sp(event);et('ll1','label')">us ✎</div>
+                </div>
+                <div class="ab-pol" onclick="pu(2)">
+                  <div class="ab-pol-img" id="pl2"><span>📷</span><img id="pi2" style="display:none"/></div>
+                  <div class="ab-pol-lbl" id="ll2" onclick="sp(event);et('ll2','label')">adventures ✎</div>
+                </div>
+              </div>
+              <div class="ab-msg" style="border-left-color:#4a7c3f;">
+                <div class="ab-msg-txt" id="m2" onclick="et('m2','message')">These are the frames I would keep forever — the ones I will look at when we are old and still smiling at each other. ✎</div>
+              </div>
+            </div>
+            <div class="ab-pgnum">— 2 —</div>
+            <div class="ab-corner"></div>
+          </div>
+          <div class="ab-face back ab-page">
+            <div class="ab-washi" style="top:52px;"></div>
+            <div class="ab-stamp">FIELD NOTES</div>
+            <div class="ab-page-inner">
+              <div class="ab-chdr">— Reasons I Love You —</div>
+              <span class="ab-tag">expedition log</span>
+              <ul class="ab-reasons" id="rl">
+                <li onclick="er(0)">The way your laugh sounds — I would travel anywhere to hear it ✎</li>
+                <li onclick="er(1)">How you make every place feel like home ✎</li>
+                <li onclick="er(2)">Your heart — adventurous, kind, completely yours ✎</li>
+                <li onclick="er(3)">The way you look at the world full of wonder ✎</li>
+                <li onclick="er(4)">That you chose me for this adventure ✎</li>
+              </ul>
+            </div>
+            <div class="ab-pgnum">— 3 —</div>
+            <div class="ab-corner"></div>
+          </div>
+        </div>
+
+        <div class="ab-spread" id="sp2" style="z-index:8;">
+          <div class="ab-face front ab-page">
+            <div class="ab-stamp">EXPEDITION LOG</div>
+            <div class="ab-balloons"><span>🟣</span><span>🟢</span><span>🟣</span></div>
+            <div class="ab-page-inner">
+              <div class="ab-chdr">— Our Adventures —</div>
+              <div class="ab-tl" id="tl">
+                <div class="ab-tl-item">
+                  <div style="display:flex;flex-direction:column;align-items:center;">
+                    <div class="ab-tl-dot"></div>
+                    <div class="ab-tl-line"></div>
+                  </div>
+                  <div><div class="ab-tl-date" onclick="etl(0,'d')">the beginning ✎</div><div class="ab-tl-txt" onclick="etl(0,'t')">Where it all started — the first hello, the butterflies, the feeling I never wanted to end. ✎</div></div>
+                </div>
+                <div class="ab-tl-item">
+                  <div style="display:flex;flex-direction:column;align-items:center;">
+                    <div class="ab-tl-dot" style="background:#4a7c3f;"></div>
+                    <div class="ab-tl-line"></div>
+                  </div>
+                  <div><div class="ab-tl-date" style="color:#6b3fa0;" onclick="etl(1,'d')">our first date ✎</div><div class="ab-tl-txt" onclick="etl(1,'t')">The day that made me certain. I never wanted it to end. ✎</div></div>
+                </div>
+                <div class="ab-tl-item">
+                  <div style="display:flex;flex-direction:column;align-items:center;">
+                    <div class="ab-tl-dot"></div>
+                  </div>
+                  <div><div class="ab-tl-date" onclick="etl(2,'d')">a favorite memory ✎</div><div class="ab-tl-txt" onclick="etl(2,'t')">Still replaying this one. Still smiling every time. ✎</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="ab-pgnum">— 4 —</div>
+            <div class="ab-corner"></div>
+          </div>
+          <div class="ab-face back ab-page">
+            <div class="ab-washi" style="top:44px;"></div>
+            <div class="ab-stamp">LOVE LETTER</div>
+            <div class="ab-page-inner">
+              <div class="ab-chdr">— A Letter for You —</div>
+              <div class="ab-frame" onclick="pu(4)">
+                <div class="ab-photo" id="ph4"><span class="ab-photo-icon">📷</span><span class="ab-photo-hint">our favorite photo</span></div>
+                <div class="ab-caption" id="cp4" onclick="sp(event);et('cp4','caption')">together ✎</div>
+              </div>
+              <div class="ab-msg" style="border-left-color:#c9962a;">
+                <div class="ab-msg-txt" id="m5" onclick="et('m5','message')">One month in and you have already made the map bigger. Thank you for being my adventure and my home. Here is to every chapter ahead — I want them all with you. ✎</div>
+                <div class="ab-msg-sign">Happy Monthsary, explorer 🎈</div>
+              </div>
+            </div>
+            <div class="ab-pgnum">— 5 —</div>
+            <div class="ab-corner"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ab-nav">
+      <button class="ab-btn" id="btn-prev" onclick="turn(-1)" disabled>◂ prev</button>
+      <div class="ab-ind" id="ind">Cover</div>
+      <button class="ab-btn" id="btn-next" onclick="turn(1)">next ▸</button>
+    </div>
+    <div class="ab-dots" id="dots">
+      <div class="ab-dot on"  onclick="jump(0)"></div>
+      <div class="ab-dot"     onclick="jump(1)"></div>
+      <div class="ab-dot"     onclick="jump(2)"></div>
+      <div class="ab-dot"     onclick="jump(3)"></div>
+      <div class="ab-dot"     onclick="jump(4)"></div>
+      <div class="ab-dot"     onclick="jump(5)"></div>
+    </div>
+    <div class="ab-hint">tap ✎ to edit &nbsp;·&nbsp; tap frames to upload &nbsp;·&nbsp; swipe to flip</div>
+  </div>
+</div>
+
+<input type="file" id="fi" accept="image/*">
+
+<script>
+const NS = 3;
+const LABELS = ['Cover','Chapter One','Snapshots','Reasons','Adventures','Love Letter'];
+let cur = 0, busy = false, slot = null;
+let tx0 = 0, ty0 = 0;
+
+function syncUI() {
+  const p = cur === 0 ? 0 : cur * 2 - 1;
+  document.getElementById('ind').textContent = LABELS[p];
+  document.getElementById('btn-prev').disabled = cur === 0;
+  document.getElementById('btn-next').disabled = cur >= NS;
+  document.querySelectorAll('.ab-dot').forEach((d, i) => d.classList.toggle('on', i === p));
+}
+
+function syncZ() {
+  for (let i = 0; i < NS; i++) {
+    const el = document.getElementById('sp' + i);
+    if (i < cur) {
+      el.style.zIndex = i;
+      el.style.transform = 'rotateY(-180deg)';
+    } else if (i === cur) {
+      el.style.zIndex = 10;
+      el.style.transform = 'rotateY(0deg)';
+    } else {
+      el.style.zIndex = NS - i;
+      el.style.transform = 'rotateY(0deg)';
+    }
+    el.style.transition = '';
+  }
+}
+
+function turn(dir) {
+  if (busy) return;
+  const next = cur + dir;
+  if (next < 0 || next > NS) return;
+  busy = true;
+
+  const idx = dir > 0 ? cur : next;
+  const el = document.getElementById('sp' + idx);
+  el.style.zIndex = 20;
+  el.style.transition = 'none';
+  el.style.transform = dir > 0 ? 'rotateY(0deg)' : 'rotateY(-180deg)';
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      el.style.transition = 'transform 0.65s cubic-bezier(0.645,0.045,0.355,1.000)';
+      el.style.transform = dir > 0 ? 'rotateY(-180deg)' : 'rotateY(0deg)';
+    });
+  });
+
+  setTimeout(() => {
+    cur = next;
+    syncZ();
+    busy = false;
+    syncUI();
+  }, 660);
+}
+
+function jump(pi) {
+  if (busy) return;
+  const ts = pi === 0 ? 0 : Math.ceil(pi / 2);
+  if (ts === cur) return;
+  const dir = ts > cur ? 1 : -1;
+  const steps = Math.abs(ts - cur);
+  (function step(i) {
+    if (i >= steps) return;
+    setTimeout(() => { turn(dir); step(i + 1); }, i * 700);
+  })(0);
+}
+
+const stage = document.getElementById('ab-stage');
+stage.addEventListener('touchstart', e => {
+  tx0 = e.touches[0].clientX;
+  ty0 = e.touches[0].clientY;
+}, { passive: true });
+stage.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx0;
+  const dy = e.changedTouches[0].clientY - ty0;
+  if (Math.abs(dx) > Math.abs(dy) * 1.4 && Math.abs(dx) > 44) {
+    turn(dx < 0 ? 1 : -1);
+  }
+}, { passive: true });
+
+function pu(s) { slot = s; document.getElementById('fi').click(); }
+document.getElementById('fi').addEventListener('change', function(e) {
+  const f = e.target.files[0];
+  if (!f || slot === null) return;
+  const url = URL.createObjectURL(f);
+  if (slot === 0 || slot === 4) {
+    const ph = document.getElementById('ph' + slot);
+    ph.innerHTML = '<img src="' + url + '">';
+  } else if (slot === 1 || slot === 2) {
+    const img = document.getElementById('pi' + slot);
+    img.src = url; img.style.display = 'block';
+    const ph = document.getElementById('pl' + slot);
+    const sp2 = ph.querySelector('span');
+    if (sp2) sp2.style.display = 'none';
+  }
+  this.value = '';
+});
+
+function et(id, label) {
+  const el = document.getElementById(id);
+  const v = prompt('Edit ' + label + ':', el.innerText.replace(/ ✎$/, ''));
+  if (v !== null) el.textContent = v + ' ✎';
+}
+function editCD() {
+  const el = document.getElementById('cd');
+  const v = prompt('Enter your date:', el.textContent);
+  if (v) el.textContent = v;
+}
+function er(i) {
+  const li = document.querySelectorAll('#rl li')[i];
+  const v = prompt('Edit reason:', li.innerText.replace(/ ✎$/, ''));
+  if (v !== null) { li.textContent = v + ' ✎'; li.onclick = () => er(i); }
+}
+function etl(i, f) {
+  const row = document.querySelectorAll('#tl .ab-tl-item')[i];
+  const el = row.querySelector(f === 'd' ? '.ab-tl-date' : '.ab-tl-txt');
+  const v = prompt('Edit:', el.innerText.replace(/ ✎$/, ''));
+  if (v !== null) el.textContent = v + ' ✎';
+}
+function sp(e) { e.stopPropagation(); }
+
+syncZ();
+syncUI();
+</script>
